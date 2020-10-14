@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useParams
+} from "react-router-dom";
+
 import Issues from './components/Issues';
 import Pagination from './components/Pagination';
 import axios from 'axios';
 import './App.css';
+import IssueDetails from './components/IssueDetails'
 
 
 const App = () => {
@@ -29,19 +37,48 @@ const App = () => {
 
   // Change page
   const paginate = pageNumber => setCurrentPage(pageNumber);
-
+  console.log(issues);
   return (
-    <div className='container mt-5'>
-      <h1 className='text-primary mb-3'>Issue Browser</h1>
-      <Issues issues={currentIssues} loading={loading} />
-  
-      <Pagination
-        issuesPerPage={issuesPerPage}
-        totalIssues={issues.length}
-        paginate={paginate}
-      />
-    </div>
+    <Router>
+      <Switch>
+            <Route path="/issue/:id">
+              <IssueDetails data = {currentIssues}/>
+            </Route>
+            <Route path="/">
+              <HomeView />
+            </Route>
+      </Switch>
+    </Router>
   );
+
+
+  function HomeView() {
+    return (
+      <div className='container mt-5'>
+        <h1 className='text-primary mb-3'>Issue Browser</h1>
+        <Issues issues={currentIssues} loading={loading} />
+    
+        <Pagination
+          issuesPerPage={issuesPerPage}
+          totalIssues={issues.length}
+          paginate={paginate}
+        />
+    </div>
+    );
+  }
+  // function IssueDetailView() {
+  //       let { id } = useParams();
+  //       let current = null;
+  //       for(let issue in currentIssues) {
+  //         if (currentIssues[issue].number == id) {
+  //           current = currentIssues[issue];
+  //           break;
+  //         }
+  //       }
+  //     return (
+  //       <IssueDetails data={current} />
+  //     )
+  // }
 };
 
 export default App;
